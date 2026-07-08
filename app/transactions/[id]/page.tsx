@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import AppShell from "@/components/shared/app-shell";
 import { getTransactionById, type TransactionDetails } from "@/server/transactions.actions";
+import { Spinner } from "@/components/ui/spinner";
 
 const statusStyles: Record<string, string> = {
   SUCCESS: "bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
@@ -90,7 +91,11 @@ export default function Page() {
 
       <Card className="max-w-3xl p-6">
         {isLoading ? (
-          <p className="text-sm text-slate-500">Loading transaction details...</p>
+            <div className="flex h-[200px] w-full items-center justify-center rounded-xl md:h-[400px]">
+              <Spinner className="size-15 animate-spin stroke-black" />
+            </div>
+
+        //   <p className="text-sm text-slate-500">Loading transaction details...</p>
         ) : !transaction ? (
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Transaction not found</h2>

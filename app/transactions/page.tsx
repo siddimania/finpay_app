@@ -32,6 +32,8 @@ import {
   getAllTransactions,
   type TransactionListItem,
 } from "@/server/transactions.actions";
+import { Spinner } from "@/components/ui/spinner";
+import { errorToast, successToast } from "@/components/shared/app-toast";
 
 const statusStyles: Record<string, string> = {
   SUCCESS: "bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
@@ -52,16 +54,16 @@ function formatStatus(status: string) {
 }
 
 function formatDate(value: string | null) {
-  if (!value) {
-    return "—";
-  }
+  if (!value) return "—";
 
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return "—";
-  }
+  if (Number.isNaN(date.getTime())) return "—";
 
-  return date.toLocaleDateString("en-US");
+  const day = date.toLocaleDateString("en-GB", { day: "numeric" });
+  const month = date.toLocaleDateString("en-GB", { month: "long" });
+  const year = date.toLocaleDateString("en-GB", { year: "numeric" });
+
+  return `${day} ${month}, ${year}`;
 }
 
 export default function Page() {
@@ -131,9 +133,12 @@ export default function Page() {
       const result = await getAllTransactions();
       if (result.success) {
         setTransactions(result.data);
+        successToast("Success, Created", 2000);
       } else {
         setTransactions([]);
       }
+    } else {
+      errorToast("Failed to create transaction", 2000);
     }
   }
 
@@ -178,8 +183,6 @@ export default function Page() {
                   <Input
                     id="amount"
                     type="number"
-                    min="0"
-                    step="0.01"
                     value={form.amount}
                     onChange={(event) => setForm((current) => ({ ...current, amount: event.target.value }))}
                     required
@@ -240,7 +243,7 @@ export default function Page() {
         <div className="border-b border-slate-100 px-6 py-4">
           <h2 className="text-base font-semibold">All Transactions</h2>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto ml-5">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -256,7 +259,9 @@ export default function Page() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="py-10 text-center text-slate-400">
-                    Loading transactions...
+                    <div className="flex h-[200px] w-full items-center justify-center rounded-xl md:h-[400px]">
+                        <Spinner className="size-15 animate-spin stroke-black" />
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : transactions.length === 0 ? (

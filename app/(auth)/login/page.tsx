@@ -152,7 +152,7 @@ export default function Login() {
                 <Button
                   type="submit"
                   form="login-form"
-                  className="bg-app-soft-green hover:bg-app-soft-green/80 mt-2 w-full cursor-pointer rounded-2xl py-5 text-black md:py-6"
+                  className="mt-2 w-full cursor-pointer rounded-2xl py-5 text-white md:py-6"
                   disabled={isPending}
                 >
                   {isPending ? (
@@ -167,19 +167,7 @@ export default function Login() {
 
         </div>
 
-        <div className="p-3">
-          <p className="text-accent-foreground text-center text-xs md:text-sm">
-            Don't have an account ?
-            <Button variant="link" className="px-2">
-              <Link
-                href="/signup"
-                className="text-sm font-semibold md:text-base"
-              >
-                Create account
-              </Link>
-            </Button>
-          </p>
-        </div>
+      
       </form>
     </section>
   );

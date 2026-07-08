@@ -37,6 +37,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { signOutAction } from '@/server/auth/login.actions';
+import { useTransition } from "react";
+import { toast } from "sonner";
+import AppToast from "@/components/shared/app-toast";
+import { Bug } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Static data — replace with real data fetching in your app
@@ -129,7 +135,28 @@ const statusStyles: Record<TxStatus, string> = {
 // ---------------------------------------------------------------------------
 
 export default function Page() {
+  const router = useRouter();
   const [range, setRange] = React.useState("Past month");
+  const [isPending, startTransition] = useTransition();
+ 
+  const logoutUser = () => {
+    startTransition(async () => {
+      const { success, errorMessage } = await signOutAction();
+      if (success) {
+        router.push("/");
+      } else {
+        toast.custom((t) => (
+          <AppToast
+            toastObject={t}
+            title="Error !!"
+            message={`${errorMessage}`}
+            icon={Bug}
+            color="bg-red-400"
+          />
+        ));
+      }
+    });
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
@@ -182,10 +209,19 @@ export default function Page() {
           >
             <Bell className="h-5 w-5" strokeWidth={1.75} />
           </button>
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatar-placeholder.jpg" alt="Account avatar" />
-            <AvatarFallback>FP</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar className="h-9 w-9 cursor-pointer">
+                <AvatarImage src="/avatar-placeholder.jpg" alt="Account avatar" />
+                <AvatarFallback>FP</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={logoutUser}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
 
         <main className="flex-1 space-y-6 p-6 md:p-8">

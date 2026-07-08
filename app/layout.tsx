@@ -2,6 +2,8 @@
 // https://tailwindcss.com/docs/font-family
 import type { Metadata } from "next";
 import { Inter, Merriweather, JetBrains_Mono } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const fontSans = Inter({
@@ -32,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}>
+        <NextTopLoader showSpinner={false} height={4} color={"#FFD66E"} />
         {children}
+        <Toaster richColors position="top-center" duration={3000} />
       </body>
     </html>
   );

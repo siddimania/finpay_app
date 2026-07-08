@@ -1,4 +1,4 @@
-import { sql, relations } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   integer,
   pgTable,
@@ -14,12 +14,12 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const transactions = pgTable('transactions', {
-  transactionId: text('transaction_id').primaryKey().notNull(),
-  userId: text('user_id').notNull(),
-  merchantId: text('merchant_id').notNull(),
-  amount: numeric('amount').notNull(),
+  transaction_id: text('transaction_id').primaryKey().notNull(),
+  user_id: text('user_id').notNull(),
+  merchant_id: text('merchant_id').notNull(),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   currency: text('currency').notNull(),
   status: text('status').notNull(),
-  paymentMethod: text('payment_method').notNull(),
+  payment_method: text('payment_method').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

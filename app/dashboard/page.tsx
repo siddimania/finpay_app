@@ -1,14 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Bell,
-  LayoutDashboard,
-  ListOrdered,
-  Store,
-  Settings,
-  ChevronDown,
-} from "lucide-react";
+import { Bell, ChevronDown, Bug } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -38,22 +31,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { signOutAction } from '@/server/auth/login.actions';
+import { signOutAction } from "@/server/auth/login.actions";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import AppToast from "@/components/shared/app-toast";
-import { Bug } from "lucide-react";
+import AppShell from "@/components/shared/app-shell";
 
 // ---------------------------------------------------------------------------
 // Static data — replace with real data fetching in your app
 // ---------------------------------------------------------------------------
-
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "#", active: true },
-  { label: "Transactions", icon: ListOrdered, href: "#", active: false },
-  { label: "Merchants", icon: Store, href: "#", active: false },
-  { label: "Settings", icon: Settings, href: "#", active: false },
-];
 
 const statCards = [
   { label: "Total Balance", value: "$45,210.65" },
@@ -137,7 +123,7 @@ const statusStyles: Record<TxStatus, string> = {
 export default function Page() {
   const router = useRouter();
   const [range, setRange] = React.useState("Past month");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
  
   const logoutUser = () => {
     startTransition(async () => {
@@ -158,75 +144,33 @@ export default function Page() {
     });
   };
 
+  const headerRight = (
+    <div className="flex items-center gap-4">
+      <button
+        type="button"
+        aria-label="Notifications"
+        className="rounded-full p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+      >
+        <Bell className="h-5 w-5" strokeWidth={1.75} />
+      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="h-9 w-9 cursor-pointer">
+            <AvatarImage src="/avatar-placeholder.jpg" alt="Account avatar" />
+            <AvatarFallback>FP</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      {/* Sidebar */}
-      <aside className="hidden w-56 shrink-0 border-r border-slate-200 bg-white px-4 py-6 md:flex md:flex-col">
-        <div className="mb-8 flex items-center gap-2 px-2">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            className="shrink-0"
-          >
-            <path d="M4 2h16l-6 8h6l-12 12 3-9H5l-1-11z" fill="#3B82F6" />
-          </svg>
-          <span className="text-lg font-semibold tracking-tight">FinPay</span>
-        </div>
-
-        <nav className="flex flex-1 flex-col gap-1">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "flex flex-col items-center gap-1 rounded-lg px-2 py-3 text-xs font-medium transition-colors",
-                item.active
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
-              )}
-            >
-              <item.icon className="h-5 w-5" strokeWidth={1.75} />
-              {item.label}
-            </a>
-          ))}
-        </nav>
-      </aside>
-
-      {/* Main column */}
-      <div className="flex min-h-screen flex-1 flex-col">
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 md:hidden">
-          <span className="text-lg font-semibold">FinPay</span>
-        </header>
-
-        <header className="hidden items-center justify-end gap-4 border-b border-slate-200 bg-white px-8 py-4 md:flex">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="rounded-full p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600"
-          >
-            <Bell className="h-5 w-5" strokeWidth={1.75} />
-          </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar className="h-9 w-9 cursor-pointer">
-                <AvatarImage src="/avatar-placeholder.jpg" alt="Account avatar" />
-                <AvatarFallback>FP</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={logoutUser}>
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </header>
-
-        <main className="flex-1 space-y-6 p-6 md:p-8">
-          {/* Stat cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <AppShell activeHref="/dashboard" headerRight={headerRight}>
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {statCards.map((card) => (
               <Card key={card.label} className="p-5">
                 <p className="text-sm text-slate-500">{card.label}</p>
@@ -375,8 +319,6 @@ export default function Page() {
               </Table>
             </div>
           </Card>
-        </main>
-      </div>
-    </div>
+    </AppShell>
   );
 }

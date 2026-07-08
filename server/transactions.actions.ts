@@ -171,9 +171,18 @@ export async function getCurrentWeekTransactionsSummary() {
 export async function createTransaction(input: TransactionCreateInput) {
   try {
     const supabase = await createClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user?.id) {
+      return { success: false, error: "You must be logged in to create a transaction." };
+    }
+
     const payload = {
       transaction_id: `TXN-${Date.now()}`,
-      user_id: "guest-user",
+      user_id: user.id,
       merchant_id: input.merchantId,
       amount: input.amount,
       currency: input.currency,

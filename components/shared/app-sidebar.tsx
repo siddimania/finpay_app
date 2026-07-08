@@ -16,7 +16,6 @@ const navItems: SidebarNavItem[] = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Transactions", icon: ListOrdered, href: "/transactions" },
   { label: "Merchants", icon: Store, href: "/merchants" },
-  { label: "Settings", icon: Settings, href: "/settings" },
 ];
 
 export default function AppSidebar({ activeHref }: AppSidebarProps) {

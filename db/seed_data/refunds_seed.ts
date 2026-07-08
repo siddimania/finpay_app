@@ -29,7 +29,7 @@ async function transactionsSeed() {
       {
         transaction_id: "TXN-10023", 
         user_id: "8db4e69c-8727-4e41-a3b2-b7c7f23d40c3", 
-        merchant_id: "MER-921", 
+        merchant_id: "MER-920", 
         amount: "600.00",
         currency: "INR",  
         status: "SUCCESS",  
@@ -49,7 +49,7 @@ async function transactionsSeed() {
       {
         transaction_id: "TXN-10025", 
         user_id: "8db4e69c-8727-4e41-a3b2-b7c7f23d40c3", 
-        merchant_id: "MER-922", 
+        merchant_id: "MER-920", 
         amount: "800.00",
         currency: "INR",  
         status: "SUCCESS",  
@@ -59,7 +59,7 @@ async function transactionsSeed() {
       {
         transaction_id: "TXN-10026", 
         user_id: "8db4e69c-8727-4e41-a3b2-b7c7f23d40c3", 
-        merchant_id: "MER-922", 
+        merchant_id: "MER-920", 
         amount: "800.00",
         currency: "INR",  
         status: "SUCCESS",  
@@ -89,7 +89,7 @@ async function transactionsSeed() {
       {
         transaction_id: "TXN-10029", 
         user_id: "8db4e69c-8727-4e41-a3b2-b7c7f23d40c3", 
-        merchant_id: "MER-924", 
+        merchant_id: "MER-920", 
         amount: "800.00",
         currency: "INR",  
         status: "SUCCESS",  
@@ -99,7 +99,7 @@ async function transactionsSeed() {
       {
         transaction_id: "TXN-10030", 
         user_id: "8db4e69c-8727-4e41-a3b2-b7c7f23d40c3", 
-        merchant_id: "MER-928", 
+        merchant_id: "MER-920", 
         amount: "800.00",
         currency: "INR",  
         status: "SUCCESS",  

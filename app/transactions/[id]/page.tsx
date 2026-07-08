@@ -8,10 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import AppShell from "@/components/shared/app-shell";
-import {
-  getTransactionById,
-  type TransactionDetails,
-} from "@/server/transactions.actions";
+import { getTransactionById, type TransactionDetails } from "@/server/transactions.actions";
 
 const statusStyles: Record<string, string> = {
   SUCCESS: "bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
@@ -20,7 +17,7 @@ const statusStyles: Record<string, string> = {
 };
 
 function formatCurrency(value: number, currency: string) {
-  return value.toLocaleString("en-US", {
+  return value.toLocaleString("en-IN", {
     style: "currency",
     currency,
     minimumFractionDigits: 2,
@@ -50,7 +47,7 @@ function formatDate(value: string | null) {
 
 export default function Page() {
   const router = useRouter();
-  const params = useParams<{ txn_id: string }>();
+  const params = useParams<{ id: string }>();
   const [transaction, setTransaction] = React.useState<TransactionDetails | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -58,23 +55,18 @@ export default function Page() {
     let isMounted = true;
 
     async function loadTransaction() {
-      if (!params?.txn_id) {
+      if (!params?.id) {
         return;
       }
 
       setIsLoading(true);
-      const result = await getTransactionById(params.txn_id);
+      const result = await getTransactionById(params.id);
 
       if (!isMounted) {
         return;
       }
 
-      if (result.success && result.data) {
-        setTransaction(result.data);
-      } else {
-        setTransaction(null);
-      }
-
+      setTransaction(result.success ? result.data : null);
       setIsLoading(false);
     }
 
@@ -83,7 +75,7 @@ export default function Page() {
     return () => {
       isMounted = false;
     };
-  }, [params?.txn_id]);
+  }, [params?.id]);
 
   const badgeClass = statusStyles[transaction?.status?.toUpperCase() ?? "PENDING"] ?? statusStyles.PENDING;
 
@@ -100,11 +92,9 @@ export default function Page() {
         {isLoading ? (
           <p className="text-sm text-slate-500">Loading transaction details...</p>
         ) : !transaction ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             <h2 className="text-lg font-semibold">Transaction not found</h2>
-            <p className="text-sm text-slate-500">
-              The requested transaction could not be loaded.
-            </p>
+            <p className="text-sm text-slate-500">The requested transaction could not be loaded.</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -125,9 +115,7 @@ export default function Page() {
               </div>
               <div className="rounded-lg border border-slate-200 p-4">
                 <p className="text-sm text-slate-500">Amount</p>
-                <p className="mt-1 font-medium">
-                  {formatCurrency(transaction.amount, transaction.currency)}
-                </p>
+                <p className="mt-1 font-medium">{formatCurrency(transaction.amount, transaction.currency)}</p>
               </div>
               <div className="rounded-lg border border-slate-200 p-4">
                 <p className="text-sm text-slate-500">Payment Method</p>
@@ -143,7 +131,7 @@ export default function Page() {
               </div>
               <div className="rounded-lg border border-slate-200 p-4">
                 <p className="text-sm text-slate-500">Created</p>
-                <p className="mt-1 font-medium">{formatDate(transaction.createdAt)}</p>
+                <p className="mt-1 font-medium">{formatDate(transaction.payment_date)}</p>
               </div>
             </div>
 

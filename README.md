@@ -4,14 +4,13 @@ FinPay is a modern payments dashboard for viewing transactions, managing merchan
 
 ## Getting started
 
-```bash
-npm install
-npm run dev
+Open https://finpay-app.vercel.app/ to view the app.
+
+```
+- email & password already provided
 ```
 
-Open http://localhost:3000 to view the app.
-
-## Verification
+## Built Commands
 
 ```bash
 npm run build
@@ -32,12 +31,12 @@ npm test
 - Vitest and React Testing Library for unit tests
 ```
 
-## Complete Architecture
+## Complete Architecture of the Application
 
 ### 1. Login
 ```
 - if user not logged in, direct to login page
-- if user logged in, direct to dashboard
+- if user logged in, direct to dashboard page
 ```
 
 ### 2. Logout
@@ -78,7 +77,7 @@ npm test
     - it accepts (name, email, phone, address) 
 ```
 
-## All Features
+## All Features of the App
 ```
 - sidebar and header navigation
 - Dashboard summary cards and payment volume chart
@@ -172,3 +171,87 @@ code the following
 ```
 
 
+## Assignment Tasks Logs
+
+### Done: Task 1 - AI development workflow setup
+```
+- added claude.md file
+- added details in that
+```
+### Done: Task 2 - Backend implementation 
+```
+- I setup postgreSQl 
+- all logic in server actions 
+    - app/server/transaction.actions.ts
+    - app/server/merchants.actions.ts
+    - app/server/refunds.actions.ts
+```
+### Done: Task 3 - Frontend Implementation
+```
+- user next.js framework for it
+- deployed prototyped app on vercel
+```
+
+### Done: Task 4 - Idempotency and Concurrency
+```
+- only authorized user can make a refund
+- only 1 refund will happen at a time
+```
+
+### Done: Task 5 - AI prompt log
+```
+- provided above
+```
+
+### Done: Task 6 - AI skills
+```
+- add in app/skill.md
+```
+
+
+### Done: Task 7 - Review AI-Generated Code
+```
+1. What is wrong with this code?
+    - Missing authentication and authorization
+        - Anyone who can access this endpoint could potentially issue refunds.
+        - There is no middleware
+    - No refund eligibility validation
+        - A failed payment should never be refunded.
+    - No amount validation
+        - amount should be numeric only
+    - No partial refund validation
+    - No idempotency
+2. Highest-risk issues
+    - Duplicate refunds
+    - Missing database transaction (should maintain a write ahead log)
+    - No refund eligibility checks
+
+3. What would you fix first?
+    - Authentication & authorization
+    - Refund eligibility validation
+    - Database transaction
+    - Idempotency support
+    - Duplicate refund prevention (locking/unique constraints)
+    - Amount validation
+    - Audit logging
+    - Error handling and monitoring
+
+4. What tests would you add?
+    - Transaction not found → 404
+    - Invalid refund amount
+    - Negative refund amount
+    - Refund exceeds original payment
+    - Full refund
+    - Partial refund
+    - Already refunded transaction
+    - Failed or Pending payment cannot be refunded
+    - Unauthorized admin
+
+5. Would I approve this AI-generated code for production?
+    - No, because of above reasons
+```
+
+### Done: Task 8 - Testing
+```
+- add tests in app/transactions/id/page.test.tsx
+```

@@ -31,7 +31,17 @@ import {
   type MerchantListItem,
 } from "@/server/merchants.actions";
 import { Spinner } from "@/components/ui/spinner";
-import { successToast } from "@/components/shared/app-toast";
+import AppToast, { successToast } from "@/components/shared/app-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { signOutAction } from "@/server/auth/login.actions";
+import { toast } from "sonner";
+import { Bug } from "lucide-react";
 
 function formatDate(value: string | null) {
   if (!value) return "—";
@@ -50,6 +60,7 @@ export default function Page() {
   const router = useRouter();
   const [merchants, setMerchants] = React.useState<MerchantListItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [, startTransition] = React.useTransition();
   const [isOpen, setIsOpen] = React.useState(false);
   const [form, setForm] = React.useState({
     merchantName: "",
@@ -109,8 +120,43 @@ export default function Page() {
     }
   }
 
+  const logoutUser = () => {
+    startTransition(async () => {
+      const { success, errorMessage } = await signOutAction();
+      if (success) {
+        router.push("/");
+      } else {
+        toast.custom((t) => (
+          <AppToast
+            toastObject={t}
+            title="Error !!"
+            message={`${errorMessage}`}
+            icon={Bug}
+            color="bg-red-400"
+          />
+        ));
+      }
+    });
+  };
+
+  const headerRight = (
+    <div className="flex items-center gap-4">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="h-9 w-9 cursor-pointer">
+            <AvatarImage src="/user.png" alt="Account avatar" />
+            <AvatarFallback>FP</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+
   return (
-    <AppShell activeHref="/merchants">
+    <AppShell activeHref="/merchants" headerRight={headerRight}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Merchants</h1>

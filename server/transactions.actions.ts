@@ -60,7 +60,8 @@ export async function getAllTransactions() {
     const { data, error } = await supabase
       .from("transactions")
       .select("transaction_id, user_id, merchant_id, amount, currency, status, payment_method, payment_date, created_at")
-      .order("created_at", { ascending: false });
+      .order("payment_date", { ascending: false })
+      .order('created_at', { ascending: false }); 
 
     if (error) {
       throw error;

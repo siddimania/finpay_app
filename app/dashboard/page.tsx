@@ -158,7 +158,7 @@ export default function Page() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    {["Past week", "Past month"].map((option) => (
+                    {["Past week"].map((option) => (
                       <DropdownMenuItem
                         key={option}
                         onSelect={() => setRange(option)}
@@ -229,25 +229,6 @@ export default function Page() {
               </div>
             </Card>
 
-            <Card className="p-6">
-              <h2 className="mb-6 text-base font-semibold">Payment Status</h2>
-              <div className="space-y-5">
-                {paymentStatus.map((status) => (
-                  <div key={status.label}>
-                    <div className="mb-2 flex items-center justify-between text-sm">
-                      <span className="text-slate-600">{status.label}</span>
-                      <span className="font-medium">{status.value}%</span>
-                    </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className={cn("h-full rounded-full", status.colorClass)}
-                        style={{ width: `${status.value}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
           </div>
         </>
       )}

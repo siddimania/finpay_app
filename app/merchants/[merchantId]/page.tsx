@@ -21,6 +21,7 @@ import {
   type MerchantListItem,
 } from "@/server/merchants.actions";
 import { type TransactionListItem } from "@/server/transactions.actions";
+import { Spinner } from "@/components/ui/spinner";
 
 function formatDate(value: string | null) {
   if (!value) {
@@ -47,7 +48,9 @@ export default function Page() {
   const router = useRouter();
   const params = useParams<{ merchantId: string }>();
   const [merchant, setMerchant] = React.useState<MerchantListItem | null>(null);
-  const [transactions, setTransactions] = React.useState<TransactionListItem[]>([]);
+  const [transactions, setTransactions] = React.useState<TransactionListItem[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -101,17 +104,23 @@ export default function Page() {
 
       <Card className="p-6">
         {isLoading ? (
-          <p className="text-sm text-slate-500">Loading merchant details...</p>
+          <div className="flex h-[200px] w-full items-center justify-center rounded-xl md:h-[400px]">
+            <Spinner className="size-15 animate-spin stroke-black" />
+          </div>
         ) : !merchant ? (
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Merchant not found</h2>
-            <p className="text-sm text-slate-500">This merchant could not be loaded.</p>
+            <p className="text-sm text-slate-500">
+              This merchant could not be loaded.
+            </p>
           </div>
         ) : (
           <div className="space-y-6">
             <div>
               <p className="text-sm text-slate-500">Merchant Details</p>
-              <h2 className="text-2xl font-semibold tracking-tight">{merchant.merchantName}</h2>
+              <h2 className="text-2xl font-semibold tracking-tight">
+                {merchant.merchantName}
+              </h2>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -138,7 +147,9 @@ export default function Page() {
 
       <Card className="overflow-hidden">
         <div className="border-b border-slate-100 px-6 py-4">
-          <h2 className="text-base font-semibold">Transactions by this Merchant</h2>
+          <h2 className="text-base font-semibold">
+            Transactions by this Merchant
+          </h2>
         </div>
         <div className="overflow-x-auto ml-5">
           <Table>
@@ -154,7 +165,10 @@ export default function Page() {
             <TableBody>
               {transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-10 text-center text-slate-400">
+                  <TableCell
+                    colSpan={5}
+                    className="py-10 text-center text-slate-400"
+                  >
                     No transactions found for this merchant.
                   </TableCell>
                 </TableRow>
@@ -165,7 +179,9 @@ export default function Page() {
                     className="cursor-pointer hover:bg-slate-50"
                     role="button"
                     tabIndex={0}
-                    onClick={() => router.push(`/transactions/${tx.transactionId}`)}
+                    onClick={() =>
+                      router.push(`/transactions/${tx.transactionId}`)
+                    }
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
@@ -173,7 +189,9 @@ export default function Page() {
                       }
                     }}
                   >
-                    <TableCell className="font-medium">{tx.transactionId}</TableCell>
+                    <TableCell className="font-medium">
+                      {tx.transactionId}
+                    </TableCell>
                     <TableCell>{formatCurrency(tx.amount)}</TableCell>
                     <TableCell>{tx.status}</TableCell>
                     <TableCell>{tx.paymentMethod}</TableCell>

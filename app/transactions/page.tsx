@@ -35,6 +35,17 @@ import {
 } from "@/server/transactions.actions";
 import { Spinner } from "@/components/ui/spinner";
 import { errorToast, successToast } from "@/components/shared/app-toast";
+import AppToast from "@/components/shared/app-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { signOutAction } from "@/server/auth/login.actions";
+import { toast } from "sonner";
+import { Bug } from "lucide-react";
 
 const statusStyles: Record<string, string> = {
   SUCCESS: "bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
@@ -71,6 +82,8 @@ export default function Page() {
   const router = useRouter();
   const [transactions, setTransactions] = React.useState<TransactionListItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [, startTransition] = React.useTransition();
+  const [isSubmittingRefund, setIsSubmittingRefund] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [form, setForm] = React.useState<{
     merchantId: string;
@@ -119,6 +132,8 @@ export default function Page() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+
+    setIsSubmittingRefund(true);
     const result = await createTransaction({
       merchantId: form.merchantId,
       amount: Number(form.amount),
@@ -127,6 +142,8 @@ export default function Page() {
       paymentMethod: form.paymentMethod,
       paymentDate: form.paymentDate,
     });
+
+    setIsSubmittingRefund(false);
 
     if (result.success) {
       setForm({
@@ -150,8 +167,43 @@ export default function Page() {
     }
   }
 
+  const logoutUser = () => {
+    startTransition(async () => {
+      const { success, errorMessage } = await signOutAction();
+      if (success) {
+        router.push("/");
+      } else {
+        toast.custom((t) => (
+          <AppToast
+            toastObject={t}
+            title="Error !!"
+            message={`${errorMessage}`}
+            icon={Bug}
+            color="bg-red-400"
+          />
+        ));
+      }
+    });
+  };
+
+  const headerRight = (
+    <div className="flex items-center gap-4">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Avatar className="h-9 w-9 cursor-pointer">
+            <AvatarImage src="/user.png" alt="Account avatar" />
+            <AvatarFallback>FP</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+
   return (
-    <AppShell activeHref="/transactions">
+    <AppShell activeHref="/transactions" headerRight={headerRight}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Card className="w-full max-w-xs p-5">
           <p className="text-sm text-slate-500">Total Transactions Amount</p>
@@ -209,16 +261,22 @@ export default function Page() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
-                  <Input
+                  <select
                     id="status"
                     value={form.status}
                     onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as TransactionStatusValue }))}
+                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-1 text-sm outline-none ring-offset-white focus:border-slate-400 focus:outline-none"
                     required
-                  />
+                  >
+                    <option value="success">Success</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                  </select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="paymentMethod">Payment Method</Label>
                   <Input
+                    className="h-10"
                     id="paymentMethod"
                     value={form.paymentMethod}
                     onChange={(event) => setForm((current) => ({ ...current, paymentMethod: event.target.value }))}
@@ -240,7 +298,9 @@ export default function Page() {
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">Save Transaction</Button>
+                <Button type="submit" disabled={isSubmittingRefund}>
+                  {isSubmittingRefund ? "Submitting..." : "Save Transaction"}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>

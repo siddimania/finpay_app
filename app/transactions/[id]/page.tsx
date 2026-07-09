@@ -34,6 +34,7 @@ import {
 } from "@/server/transactions.actions";
 import { createRefund, getRefundsForTransaction, type RefundListItem } from "@/server/refunds.actions";
 import { Spinner } from "@/components/ui/spinner";
+import { successToast } from "@/components/shared/app-toast";
 
 const statusStyles: Record<string, string> = {
   SUCCESS: "bg-emerald-50 text-emerald-600 hover:bg-emerald-50",
@@ -144,6 +145,7 @@ export default function Page() {
 
     setRefundForm({ amount: "", reason: "" });
     setIsRefundModalOpen(false);
+    successToast("Success, Created", 2000);
 
     const refundsResult = await getRefundsForTransaction(transaction.transactionId);
     if (refundsResult.success) {
@@ -258,7 +260,7 @@ export default function Page() {
                   resetRefundModal();
                 }
               }}>
-                <DialogTrigger>
+                <DialogTrigger disabled={!canRefund}>
                   <Button type="button" disabled={!canRefund}>
                     Refund
                   </Button>
@@ -273,7 +275,7 @@ export default function Page() {
                       <Input
                         id="refundAmount"
                         type="number"
-                        max={remainingRefundable}
+                        max={remainingRefundable.toFixed(2)}
                         value={refundForm.amount}
                         onChange={(event) => setRefundForm((current) => ({ ...current, amount: event.target.value }))}
                         required

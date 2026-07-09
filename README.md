@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FinPay
 
-## Getting Started
+FinPay is a modern payments dashboard for viewing transactions, managing merchants, and tracking refunds.
 
-First, run the development server:
+## Tech stack used so far
+- Next.js 16 with the App Router
+- React 19 and TypeScript
+- Tailwind CSS with shadcn-style UI components
+- Supabase SSR for authenticated data access
+- Drizzle ORM with PostgreSQL schema definitions
+- Recharts for dashboard analytics
+- Vitest and React Testing Library for unit tests
+
+## Features built so far
+- Shared app shell with sidebar and header navigation
+- Dashboard summary cards and payment volume chart
+- Transaction list and transaction detail pages
+- Transaction creation flow with current Supabase user capture
+- Transaction status updates with success, pending, and failed options
+- Refund modal with amount and reason inputs
+- Refund history table per transaction
+- Refund validation to prevent over-refunding
+- Merchant list, merchant creation, and merchant detail views
+- Seed data for merchants, transactions, and refunds
+
+## AI prompts used so far
+- Create dummy transaction and merchant seed rows
+- Fix a seed-file syntax and function-call issue
+- Replace static transaction data with real Supabase-backed data
+- Create transaction and merchant detail pages with navigation
+- Add a reusable shared app shell layout
+- Add dashboard metrics using real computed values
+- Add add-transaction and add-merchant modals
+- Add refund flows with validation and history
+- Add transaction status update support
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run lint
+npm test
+```
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

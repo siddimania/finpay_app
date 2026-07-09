@@ -19,7 +19,7 @@ export type RefundCreateInput = {
 };
 
 type RefundRow = {
-  uuid: string;
+  refund_id: string;
   transaction_id: string;
   amount: number | string;
   status: string;
@@ -29,7 +29,7 @@ type RefundRow = {
 
 function normalizeRefund(row: RefundRow): RefundListItem {
   return {
-    refundId: row.uuid,
+    refundId: row.refund_id,
     transactionId: row.transaction_id,
     amount: Number(row.amount),
     status: row.status,
@@ -43,7 +43,7 @@ export async function getRefundsForTransaction(transactionId: string) {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("refunds")
-      .select("uuid, transaction_id, amount, status, reason, created_at")
+      .select("refund_id, transaction_id, amount, status, reason, created_at")
       .eq("transaction_id", transactionId)
       .order("created_at", { ascending: false });
 

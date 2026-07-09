@@ -30,11 +30,13 @@ export type TransactionDetails = TransactionListItem & {
   userId: string;
 };
 
+export type TransactionStatusValue = "success" | "pending" | "failed";
+
 export type TransactionCreateInput = {
   merchantId: string;
   amount: number;
   currency: string;
-  status: string;
+  status: TransactionStatusValue;
   paymentMethod: string;
   paymentDate: string;
 };
@@ -104,6 +106,28 @@ export async function getTransactionById(transactionId: string) {
   } catch (error) {
     console.error("Failed to fetch transaction details:", error);
     return { success: false, data: null, error: "Failed to fetch transaction details." };
+  }
+}
+
+export async function updateTransactionStatus(transactionId: string, status: TransactionStatusValue) {
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("transactions")
+      .update({ status: status.toLowerCase() })
+      .eq("transaction_id", transactionId);
+
+    if (error) {
+      throw error;
+    }
+
+    revalidatePath("/transactions");
+    revalidatePath(`/transactions/${transactionId}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update transaction status:", error);
+    return { success: false, error: "Failed to update transaction status." };
   }
 }
 
@@ -186,7 +210,7 @@ export async function createTransaction(input: TransactionCreateInput) {
       merchant_id: input.merchantId,
       amount: input.amount,
       currency: input.currency,
-      status: input.status,
+      status: input.status.toLowerCase(),
       payment_method: input.paymentMethod,
       payment_date: input.paymentDate || new Date().toISOString().slice(0, 10),
     };

@@ -26,7 +26,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import AppShell from "@/components/shared/app-shell";
-import { getTransactionById, type TransactionDetails } from "@/server/transactions.actions";
+import {
+  getTransactionById,
+  updateTransactionStatus,
+  type TransactionDetails,
+  type TransactionStatusValue,
+} from "@/server/transactions.actions";
 import { createRefund, getRefundsForTransaction, type RefundListItem } from "@/server/refunds.actions";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -75,6 +80,8 @@ export default function Page() {
   const [refundForm, setRefundForm] = React.useState({ amount: "", reason: "" });
   const [refundError, setRefundError] = React.useState<string | null>(null);
   const [isSubmittingRefund, setIsSubmittingRefund] = React.useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = React.useState(false);
+  const [statusError, setStatusError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -109,6 +116,8 @@ export default function Page() {
   const badgeClass = statusStyles[transaction?.status?.toUpperCase() ?? "PENDING"] ?? statusStyles.PENDING;
   const refundedAmount = refunds.reduce((sum, refund) => sum + refund.amount, 0);
   const remainingRefundable = transaction ? Math.max(transaction.amount - refundedAmount, 0) : 0;
+  const isSuccessfulStatus = (transaction?.status?.toLowerCase() ?? "") === "success";
+  const canRefund = isSuccessfulStatus && remainingRefundable > 0;
 
   async function handleRefundSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -142,6 +151,26 @@ export default function Page() {
     }
   }
 
+  async function handleStatusChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    if (!transaction?.transactionId) {
+      return;
+    }
+
+    const nextStatus = event.target.value as TransactionStatusValue;
+    setIsUpdatingStatus(true);
+    setStatusError(null);
+
+    const result = await updateTransactionStatus(transaction.transactionId, nextStatus);
+    setIsUpdatingStatus(false);
+
+    if (!result.success) {
+      setStatusError(result.error ?? "Unable to update transaction status.");
+      return;
+    }
+
+    setTransaction((current) => (current ? { ...current, status: nextStatus } : current));
+  }
+
   function resetRefundModal() {
     setRefundForm({ amount: "", reason: "" });
     setRefundError(null);
@@ -173,9 +202,23 @@ export default function Page() {
                 <p className="text-sm text-slate-500">Transaction Details</p>
                 <h2 className="text-2xl font-semibold tracking-tight">{transaction.transactionId}</h2>
               </div>
-              <Badge variant="secondary" className={badgeClass}>
-                {formatStatus(transaction.status)}
-              </Badge>
+              <div className="flex flex-col gap-2 sm:items-end">
+                <Badge variant="secondary" className={badgeClass}>
+                  {formatStatus(transaction.status)}
+                </Badge>
+                <select
+                  aria-label="Change transaction status"
+                  value={transaction.status.toLowerCase()}
+                  onChange={handleStatusChange}
+                  disabled={isUpdatingStatus}
+                  className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm"
+                >
+                  <option value="success">Success</option>
+                  <option value="pending">Pending</option>
+                  <option value="failed">Failed</option>
+                </select>
+                {statusError ? <p className="text-sm text-red-500">{statusError}</p> : null}
+              </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -216,7 +259,7 @@ export default function Page() {
                 }
               }}>
                 <DialogTrigger>
-                  <Button type="button" disabled={remainingRefundable <= 0}>
+                  <Button type="button" disabled={!canRefund}>
                     Refund
                   </Button>
                 </DialogTrigger>
@@ -230,8 +273,6 @@ export default function Page() {
                       <Input
                         id="refundAmount"
                         type="number"
-                        min="0.01"
-                        step="0.01"
                         max={remainingRefundable}
                         value={refundForm.amount}
                         onChange={(event) => setRefundForm((current) => ({ ...current, amount: event.target.value }))}

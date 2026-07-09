@@ -8,7 +8,7 @@ CREATE TABLE "merchants" (
 );
 --> statement-breakpoint
 CREATE TABLE "refunds" (
-	"uuid" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"refund_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"transaction_id" text,
 	"amount" numeric(10, 2) NOT NULL,
 	"status" text NOT NULL,

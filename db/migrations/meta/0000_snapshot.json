@@ -1,5 +1,5 @@
 {
-  "id": "a237aa37-937b-4744-aa79-1b56628e57ad",
+  "id": "583f17e2-8f30-4c50-a728-9df270865310",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -58,8 +58,8 @@
       "name": "refunds",
       "schema": "",
       "columns": {
-        "uuid": {
-          "name": "uuid",
+        "refund_id": {
+          "name": "refund_id",
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,

@@ -31,6 +31,7 @@ import {
   createTransaction,
   getAllTransactions,
   type TransactionListItem,
+  type TransactionStatusValue,
 } from "@/server/transactions.actions";
 import { Spinner } from "@/components/ui/spinner";
 import { errorToast, successToast } from "@/components/shared/app-toast";
@@ -71,11 +72,18 @@ export default function Page() {
   const [transactions, setTransactions] = React.useState<TransactionListItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [form, setForm] = React.useState({
+  const [form, setForm] = React.useState<{
+    merchantId: string;
+    amount: string;
+    currency: string;
+    status: TransactionStatusValue;
+    paymentMethod: string;
+    paymentDate: string;
+  }>({
     merchantId: "",
     amount: "",
     currency: "INR",
-    status: "SUCCESS",
+    status: "success",
     paymentMethod: "UPI",
     paymentDate: new Date().toISOString().slice(0, 10),
   });
@@ -125,7 +133,7 @@ export default function Page() {
         merchantId: "",
         amount: "",
         currency: "INR",
-        status: "SUCCESS",
+        status: "success",
         paymentMethod: "UPI",
         paymentDate: new Date().toISOString().slice(0, 10),
       });
@@ -204,7 +212,7 @@ export default function Page() {
                   <Input
                     id="status"
                     value={form.status}
-                    onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))}
+                    onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as TransactionStatusValue }))}
                     required
                   />
                 </div>

@@ -36,7 +36,7 @@ export const merchants = pgTable('merchants', {
 });
 
 export const refunds = pgTable('refunds', {
-  refund_id: uuid("uuid").primaryKey().defaultRandom(),
+  refund_id: uuid("refund_id").primaryKey().defaultRandom(),
   transaction_id: text('transaction_id').references(() => transactions.transaction_id),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   status: text('status').notNull(),

@@ -22,10 +22,10 @@ export default function AppSidebar({ activeHref }: AppSidebarProps) {
   return (
     <aside className="hidden w-56 shrink-0 border-r border-slate-200 bg-white px-4 py-6 md:flex md:flex-col">
       <div className="mb-8 flex items-center gap-2 px-2">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="shrink-0">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" className="shrink-0">
           <path d="M4 2h16l-6 8h6l-12 12 3-9H5l-1-11z" fill="#3B82F6" />
         </svg>
-        <span className="text-lg font-semibold tracking-tight">FinPay</span>
+        <span className="text-2xl font-bold tracking-tight">FinPay</span>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">

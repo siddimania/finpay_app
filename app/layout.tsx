@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}>
-        <NextTopLoader showSpinner={false} height={4} color={"#FFD66E"} />
+        <NextTopLoader showSpinner={false} height={4} color={"#6366f1"} />
         {children}
         <Toaster richColors position="top-center" duration={3000} />
       </body>

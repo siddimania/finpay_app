@@ -323,6 +323,7 @@ export default function Page() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>S.No</TableHead>
                   <TableHead>Create Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
@@ -330,8 +331,9 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {refunds.map((refund) => (
+                {refunds.map((refund, index) => (
                   <TableRow key={refund.refundId}>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{formatDate(refund.createdAt)}</TableCell>
                     <TableCell>{formatCurrency(refund.amount, transaction?.currency ?? "INR")}</TableCell>
                     <TableCell>{formatStatus(refund.status)}</TableCell>

@@ -155,6 +155,7 @@ export default function Page() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
+                <TableHead>S.No</TableHead>
                 <TableHead>Transaction ID</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
@@ -173,7 +174,7 @@ export default function Page() {
                   </TableCell>
                 </TableRow>
               ) : (
-                transactions.map((tx) => (
+                transactions.map((tx, index) => (
                   <TableRow
                     key={tx.transactionId}
                     className="cursor-pointer hover:bg-slate-50"
@@ -189,6 +190,7 @@ export default function Page() {
                       }
                     }}
                   >
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">
                       {tx.transactionId}
                     </TableCell>

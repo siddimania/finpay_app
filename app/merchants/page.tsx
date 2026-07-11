@@ -231,6 +231,7 @@ export default function Page() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
+                <TableHead>S.No</TableHead>
                 <TableHead>Merchant ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
@@ -255,7 +256,7 @@ export default function Page() {
                   </TableCell>
                 </TableRow>
               ) : (
-                merchants.map((merchant) => (
+                merchants.map((merchant, index) => (
                   <TableRow
                     key={merchant.merchantId}
                     className="cursor-pointer hover:bg-slate-50"
@@ -269,6 +270,7 @@ export default function Page() {
                       }
                     }}
                   >
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">{merchant.merchantId}</TableCell>
                     <TableCell>{merchant.merchantName}</TableCell>
                     <TableCell>{merchant.merchantEmail}</TableCell>

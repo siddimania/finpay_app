@@ -315,6 +315,7 @@ export default function Page() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent">
+                <TableHead>S.No</TableHead>
                 <TableHead>Merchant</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Payment Method</TableHead>
@@ -339,7 +340,7 @@ export default function Page() {
                   </TableCell>
                 </TableRow>
               ) : (
-                transactions.map((tx) => {
+                transactions.map((tx, index) => {
                   const badgeClass = statusStyles[tx.status.toUpperCase()] ?? statusStyles.PENDING;
 
                   return (
@@ -356,6 +357,7 @@ export default function Page() {
                         }
                       }}
                     >
+                      <TableCell className="font-medium">{index + 1}</TableCell>
                       <TableCell className="font-medium">{tx.merchantId}</TableCell>
                       <TableCell>{formatCurrency(tx.amount)}</TableCell>
                       <TableCell className="text-slate-500">{tx.paymentMethod}</TableCell>
